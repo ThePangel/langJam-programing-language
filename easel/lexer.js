@@ -1,5 +1,5 @@
+import { EaselError } from "./easel.js"
 
-import { EaselError } from './stdlib.js'
 
 export const KEYWORDS = {
     prepare: 'prepare',
@@ -66,26 +66,26 @@ export class Lexer {
         this.tokens = []
         this.current = 0
         this.line = 1
-        this.column = 0
+        this.column = 1
     }
 
-    error(msg) { throw new EaselError('Error on ${this.line}:${this.column}: ${msg}') }
-}
-
-class Lexer {
+    error(msg) { throw new EaselError(`Error on ${this.line}:${this.column}: ${msg}`) }
 
     scanTokens() {
         while (this.peek() !== '\0') this.scanToken()
+
         this.tokens.push(new Token(TOKENS.EOF, null, null, this.line, this.column))
+
         return this.tokens
     }
 
     peek() {
-        if (this.current >= this.program.lenght) return '\0'
+
+        if (this.current >= this.program.length) return '\0'
         return this.program[this.current]
     }
     advance() {
-        if (this.current >= this.program.lenght) return '\0'
+        if (this.current >= this.program.length) return '\0'
         this.column++
         return this.program[this.current++]
     }
@@ -94,10 +94,11 @@ class Lexer {
         return false
     }
     scanToken() {
-        const isNumber = char => char >= '0' && char <= '9'
+        const char = this.advance()
+        const isNumber = char => (char >= '0' && char <= '9')
         const isChar = char => (char >= 'A' && char <= 'Z') || (char >= 'a' && char <= 'z') || char === '_'
         const isAlphanumeric = char => isNumber(char) || isChar(char)
-        const char = this.advance()
+
         switch (char) {
             case '(': {
                 return this.tokens.push(
@@ -206,7 +207,24 @@ class Lexer {
                     return this.tokens.push(new Token(TOKENS.NotEquiv, '!=', '!=', this.line, this.column))
                 return this.tokens.push(new Token(TOKENS.Not, '!', '!', this.line, this.column))
             }
+            case '~': {
+                while (this.peek() !== '\n' && this.peek() !== '\0') this.advance()
+                return
+            }
+            case ' ':
+            case '\r': {
+                return
+            }
+            case '\n': {
+                this.line++
+                this.column = 0
+                return
+            }
+            case 'undefined': {
+                return
+            }
             default:
+
                 if (isNumber(char)) {
                     let number = [char]
                     while (isNumber(this.peek()) || (this.peek() === "." && !number.includes(".")))
@@ -217,18 +235,17 @@ class Lexer {
                 } else if (isChar(char)) {
                     let identifier = [char]
                     while (isAlphanumeric(this.peek())) identifier.push(this.advance())
-                    identifier = identifier.join("")
+                    identifier = identifier.join('')
                     if (Object.keys(KEYWORDS).includes(identifier))
                         return this.tokens.push(new Token(TOKENS.Keyword, identifier, KEYWORDS[identifier], this.line, this.column))
                     else if (identifier === 'true' || identifier === 'false')
                         return this.tokens.push(new Token(TOKENS.Boolean, identifier, KEYWORDS[identifier], this.line, this.column))
+                    return this.tokens.push(new Token(TOKENS.Identifier, identifier, identifier, this.line, this.column))
 
                 } else this.error("Unexpected symbol/syntax " + char)
-
 
 
         }
 
     }
-
 }

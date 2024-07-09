@@ -1,6 +1,18 @@
 import fs from 'fs'
 
-import { EaselError } from './stdlib.js'
+import { Lexer } from './lexer.js'
+
+
+export class EaselError extends Error {
+    constructor(msg) {
+        super(msg)
+        this.msg = msg
+    }
+
+    toString() {
+        return this.msg
+    }
+}
 
 const readFile = location =>
     new Promise((resolve, reject) =>
@@ -10,7 +22,7 @@ const readFile = location =>
         }))
 
 const writeFile = (location, data) =>
-    new Promiseise((resolve, reject) => fs.writeFile(location, data, err => {
+    new Promise((resolve, reject) => fs.writeFile(location, data, err => {
         if (err) return reject(err)
         resolve()
     }))
@@ -19,7 +31,7 @@ const writeFile = (location, data) =>
         let argv = process.argv.slice(2)
         const debug = argv.find(cmd => cmd === '--dbg')
         argv = argv.filter(arg => arg !== '--dbg')
-
+        
         const location = argv[0]
         if (location) {
             const program = await readFile(location)
@@ -27,17 +39,18 @@ const writeFile = (location, data) =>
         } else {
 
         }
-    })
+        const program = await readFile('./test.easel')
+
+        const lexer = new Lexer(program)
+        try {
+            lexer.scanTokens()
+        } catch (err) {
+            console.log(err)
+            process.exit(1)
+        } finally {
+            if (debug) await writeFile('tokens.json', JSON.stringify(lexer.tokens, null, 2))
+        }
+    })()
 
 
-export class EaselError extends Error {
-    constructor(msg) {
-        super()
-        this.msg = msg
-    }
-
-    toString() {
-        return this.msg
-    }
-}
 
