@@ -1,6 +1,7 @@
 import fs from 'fs'
 
 import { Lexer } from './lexer.js'
+import { Parser } from './parser.js'
 
 
 export class EaselError extends Error {
@@ -50,6 +51,16 @@ const writeFile = (location, data) =>
         } finally {
             if (debug) await writeFile('tokens.json', JSON.stringify(lexer.tokens, null, 2))
         }
+        const parser = new Parser(lexer.tokens)
+        try {
+            parser.parse()
+        } catch (err) {
+            console.log(err)
+        } finally {
+            if (debug) await writeFile('ast.json', JSON.stringify(parser.ast, null, 2))
+        }
+       
+    
     })()
 
 
