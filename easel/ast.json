@@ -1,39 +1,22 @@
 [
   {
-    "type": "Array",
-    "value": [
-      {
-        "type": "Binary",
-        "left": {
-          "type": "Literal",
-          "value": 4
-        },
-        "op": "+",
-        "right": {
-          "type": "Literal",
-          "value": 21
-        }
-      }
-    ]
-  },
-  {
     "type": "Binary",
     "left": {
-      "type": "Literal",
-      "value": 2006
-    },
-    "op": "/",
-    "right": {
       "type": "Binary",
       "left": {
         "type": "Literal",
-        "value": 4012
+        "value": 15
       },
       "op": "+",
       "right": {
         "type": "Literal",
-        "value": 2
+        "value": 15
       }
+    },
+    "op": "/",
+    "right": {
+      "type": "Literal",
+      "value": 3
     }
   }
 ]
