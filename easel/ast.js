@@ -45,6 +45,23 @@ export class Return {
     }
 }
 
+export class Conditional {
+    constructor(condition, body, otherwise) {
+        this.type = 'Conditional'
+        this.condition = condition
+        this.body = body
+        this.otherwise = otherwise
+    }
+}
+
+export class Set {
+    constructor(caller, property, value) {
+        this.type = 'Set'
+        this.caller = caller
+        this.property = property
+        this.value = value
+    }
+}
 export class For {
     constructor(id, range, body) {
         this.type = 'For'
@@ -62,6 +79,40 @@ export class While {
     }
 }
 
+export class Struct {
+    constructor(name, members) {
+        this.type = 'Struct'
+        this.name = name
+        this.members = members
+    }
+}
+
+export class Instance {
+    constructor(name, members) {
+        this.type = 'Instance'
+        this.name = name
+        this.members = members
+    }
+}
+
+export class Call {
+    constructor(caller, args) {
+        this.type = 'Call'
+        this.caller = caller
+        this.args = args
+    }
+}
+
+export class Get {
+    constructor(caller, property, isExpr = false) {
+        this.type = 'Get'
+        this.caller = caller
+        this.property = property 
+        this.isExpr = isExpr
+    }
+}
+
+
 export default {
     Literal,
     Var,
@@ -70,5 +121,9 @@ export default {
     Func,
     Return,
     For,
+    Set,
+    Struct,
+    Instance,
+    
 
 }
