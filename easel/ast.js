@@ -1,5 +1,5 @@
 export class Literal {
-    constructor(value){
+    constructor(value) {
         this.type = 'Literal'
         this.value = value
     }
@@ -107,11 +107,18 @@ export class Get {
     constructor(caller, property, isExpr = false) {
         this.type = 'Get'
         this.caller = caller
-        this.property = property 
+        this.property = property
         this.isExpr = isExpr
     }
 }
 
+export class Unary {
+    constructor(op, apply) {
+        this.type = 'Unary'
+        this.op = op
+        this.apply = apply
+    }
+}
 
 export default {
     Literal,
@@ -124,6 +131,9 @@ export default {
     Set,
     Struct,
     Instance,
-    
+    Call,
+    Get,
+    Unary,
+
 
 }

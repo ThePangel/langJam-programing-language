@@ -1,4 +1,4 @@
-import { EaselError } from "./easel.js"
+import { EaselError } from "./stdlib.js"
 
 
 export const KEYWORDS = {

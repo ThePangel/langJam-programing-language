@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "type": "Call",
+    "caller": {
+      "type": "Var",
+      "name": "ink"
+    },
+    "args": [
+      {
+        "type": "Literal",
+        "value": "Hello world!"
+      }
+    ]
+  },
+  {
+    "type": "Call",
+    "caller": {
+      "type": "Var",
+      "name": "ink"
+    },
+    "args": [
+      {
+        "type": "Call",
+        "caller": {
+          "type": "Var",
+          "name": "round"
+        },
+        "args": [
+          {
+            "type": "Call",
+            "caller": {
+              "type": "Var",
+              "name": "random"
+            },
+            "args": [
+              {
+                "type": "Literal",
+                "value": 0
+              },
+              {
+                "type": "Literal",
+                "value": 100
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
