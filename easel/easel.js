@@ -58,7 +58,7 @@ const writeFile = (location, data) =>
       if (err instanceof EaselError) console.log(err.toString())
     }
   } else {
-    // Interactive REPL
+    
     const interpreter = new Interpreter()
     let scope = {
       ...stdlib,
@@ -70,7 +70,7 @@ const writeFile = (location, data) =>
       output: process.stdout
     })
 
-    // Remember to close stream before exiting
+    
     process.on('SIGINT', () => {
       input.close()
     })
@@ -93,7 +93,7 @@ const writeFile = (location, data) =>
           parser.parse()
         } catch (err) {
           if (err instanceof EaselError) {
-            // Check if start of block statement
+            
           } else throw err
         }
 

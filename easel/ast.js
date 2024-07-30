@@ -47,13 +47,12 @@ export class Return {
 
 export class Conditional {
     constructor(condition, body, otherwise) {
-        this.type = 'Conditional'
-        this.condition = condition
-        this.body = body
-        this.otherwise = otherwise
+      this.type = 'Conditional'
+      this.condition = condition
+      this.body = body
+      this.otherwise = otherwise
     }
-}
-
+  }
 export class Set {
     constructor(caller, property, value) {
         this.type = 'Set'
@@ -134,6 +133,6 @@ export default {
     Call,
     Get,
     Unary,
-
+    Conditional,
 
 }

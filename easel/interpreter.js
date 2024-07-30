@@ -75,6 +75,9 @@ export class ReturnException extends Error {
             '*': (left, right) => left * right,
             '/': (left, right) => left / right
           }
+          console.log('Operator:', value.operator);
+          console.log('Operations:', operations);
+          
           return operations[value.operator](
             this.evaluate(value.left, scope),
             this.evaluate(value.right, scope)
@@ -100,7 +103,7 @@ export class ReturnException extends Error {
           return scope
         case Ast.Struct:
           scope[node.name] = members => {
-            // Make sure therer are no invalid keys
+            
             let instance = {}
             for (let key of Object.keys(members)) {
               if (!node.members.includes(key))

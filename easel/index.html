@@ -6,7 +6,8 @@
         box-sizing: border-box;
       }
 
-      body, html {
+      body,
+      html {
         margin: 0;
         overflow-x: hidden;
         padding: 0;
@@ -19,12 +20,46 @@
   <body>
     <canvas id="canvas"></canvas>
     <script type="module">
+      import stdlib, { Canvas } from './stdlib.js'
+      import { Lexer } from './lexer.js'
+      import { Parser } from './parser.js'
+      import { Interpreter } from './interpreter.js'
+
       const defaultColor = '#ddd'
       const width = 64
       const height = 64
       const gap = 2
       let canvas, ctx, cellSize
-        
+
+      class CustomCanvas extends Canvas {
+        fill([x, y, color]) {
+          let cell = this.grid[y * this.cols + x]
+          if (cell) {
+            cell.r = color.r
+            cell.g = color.g
+            cell.b = color.b
+
+            ctx.fillStyle = `rgb(${cell.r}, ${cell.g}, ${cell.b})`
+            ctx.fillRect(
+              x * cellSize + gap * x,
+              y * cellSize + gap * y,
+              cellSize,
+              cellSize
+            )
+          }
+        }
+
+        erase([x, y]) {
+          ctx.fillStyle = defaultColor
+          ctx.fillRect(
+            x * cellSize + gap * x,
+            y * cellSize + gap * y,
+            cellSize,
+            cellSize
+          )
+        }
+      }
+
       const clear = () => {
         ctx.fillStyle = 'white'
         ctx.fillRect(0, 0, canvas.width, canvas.height)
@@ -57,6 +92,40 @@
 
         resize()
         clear()
+
+        fetch('/test.easel')
+          .then(res => res.text())
+          .then(code => {
+            // Run program
+            const lexer = new Lexer(code)
+            lexer.scanTokens()
+            const parser = new Parser(lexer.tokens)
+            parser.parse()
+            const interpreter = new Interpreter()
+            let scope = interpreter.run(parser.ast, {
+              ...stdlib,
+              Canvas: new CustomCanvas()
+            })
+
+            const interval = setInterval(() => {
+              if (!interpreter.inScope(scope, 'painting'))
+                return clearInterval(interval)
+
+              ctx.fillStyle = 'white'
+              ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+
+              try {
+                const lexer = new Lexer('painting()')
+                lexer.scanTokens()
+                const parser = new Parser(lexer.tokens)
+                parser.parse()
+                scope = interpreter.run(parser.ast, scope)
+              } catch {
+                clearInterval(interval)
+              }
+            }, 100)
+          })
+          .catch(err => console.log(err))
 
         window.addEventListener('resize', resize)
       }
